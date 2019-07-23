@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, connect } from "react-redux";
-import { createTask } from "../actions/task";
+import { createTask, deleteTask } from "../actions/task";
 import { RootState } from "typesafe-actions";
 import { ITask } from "../constants/types";
 
@@ -14,7 +14,18 @@ function TaskPage({ tasks }: RootState) {
         }}
       />
       {tasks.map((task: ITask) => {
-        return <div>{task.title}</div>;
+        return (
+          <div>
+            {task.title}-------------<span>{task.id}</span>
+            <button
+              onClick={() => {
+                dispatch(deleteTask(task.id));
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        );
       })}
     </div>
   );

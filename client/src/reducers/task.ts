@@ -1,10 +1,8 @@
-import { ITask, statusTypes } from "../constants/types";
 import { ActionType, createReducer } from "typesafe-actions";
+import produce from "immer";
 
-import * as actions from "../actions/task";
+import { ITask, statusTypes } from "../constants/types";
 import uuid from "uuid/v1";
-
-export type TaskAction = ActionType<typeof actions>;
 
 const mockTasks: ITask[] = [
   {
@@ -24,14 +22,24 @@ const mockTasks: ITask[] = [
 ];
 
 const taskReducer = createReducer(mockTasks)
-  .handleAction(actions.createTask, (state, action) =>
-    state.concat(action.payload)
+  .handleAction("CREATE_TASK", (state, action) =>
+    produce(state, draft => {
+      draft.push(action.payload);
+    })
   )
-  .handleAction(actions.editTask, (state, action) =>
-    state.map(task => {
-      if (task.id === action.payload.id) {
-        return Object.assign({}, task, action.payload.updatedAt);
-      }
+  .handleAction("EDIT_TASK", (state, action) =>
+    produce(state, draft => {
+      draft[
+        draft.findIndex(task => task.id === action.payload.id)
+      ].updatedAt = Date.now();
+    })
+  )
+  .handleAction("DELETE_ACTION", (state, action) =>
+    produce(state, draft => {
+      const indexToRemove = draft.findIndex(
+        task => task.id === action.payload.id
+      );
+      draft.splice(indexToRemove, 1);
     })
   );
 

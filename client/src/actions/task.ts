@@ -1,5 +1,5 @@
 import { ITask } from "../constants/types";
-import { createAction } from "typesafe-actions";
+import { createAction, action } from "typesafe-actions";
 import uuid from "uuid/v1";
 import { statusTypes } from "../constants/types";
 
@@ -16,4 +16,8 @@ export const createTask = createAction("CREATE_TASK", action => {
 
 export const editTask = createAction("EDIT_TASK", action => {
   return (id: string, updatedAt: Date) => action({ id, updatedAt });
+});
+
+export const deleteTask = createAction("DELETE_ACTION", action => {
+  return (id: string) => action({ id });
 });
